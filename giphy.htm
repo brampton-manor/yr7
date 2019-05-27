@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<title>GIFs in a giphy</title> 
+	</head>
+	<body>
+
+	<header class="header">
+	  <div class="container center">
+		<div class="col-3">
+		  <img class="giphy-logo" width="200" src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1385789/5842a962a6515b1e0ad75b04.png" alt="">
+		</div>
+		<div class="col-7">
+		  <form id="gif-form">
+			<input type="text" class="search" placeholder="Search For A Gif">
+			<input type="submit" class="submit-btn">
+		  </form>
+		</div>
+	  </div>
+	</header>
+	<div class="results"></div>
+	</body>
+	<script>
+		const gifForm = document.querySelector("#gif-form");
+		gifForm.addEventListener("submit", fetchGiphs);
+
+		function fetchGiphs(e) {
+		  e.preventDefault();
+			// Get the user input
+			const searchTerm = document.querySelector(".search").value;
+			const limit = 5;
+			const key = "";
+			// Variable interpolation to query the URL
+			fetch(`https://api.giphy.com/v1/gifs/search?&q=${searchTerm}&limit=${limit}&api_key=${key}`)
+			.then((response) => {return response.json(); })
+			.then((resp => {
+				// Get the data array from the response object
+				console.log(resp);
+				let dataArray = resp.data
+				
+				let foo = resp.pagination;
+				console.log(foo);
+				// Pass the array to showGiphs function
+				showGiphs(dataArray);
+				console.log(dataArray);
+			}))
+			.catch(err => console.log(err));
+		}
+
+		function showGiphs(dataArray) {
+		  const results = document.querySelector(".results");
+		  let output = '<div class="container">';
+		  dataArray.forEach((imgData) => {
+			output += `<div class="col-4"><img src="${imgData.images.fixed_width.url}"/></div>`;
+		  });
+		  document.querySelector('.results').innerHTML = output;
+		}
+	</script>
+</html>
